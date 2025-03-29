@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+    <!-- Production-ready Tailwind CSS -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+    <style>
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba') no-repeat center center/cover;
+        }
+        .content-scroll {
+            scrollbar-width: none;
+        }
+        .content-scroll::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="flex justify-between items-center p-4 z-10 relative">
+        <div class="text-red-600 font-bold text-4xl">NETFLIX</div>
+        <div class="flex space-x-4">
+            <button class="px-4 py-1 bg-red-600 rounded">Sign In</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-screen flex flex-col justify-center items-center text-center px-4">
+        <h1 class="text-5xl font-bold mb-4">Unlimited movies, TV shows, and more.</h1>
+        <p class="text-2xl mb-6">Watch anywhere. Cancel anytime.</p>
+        <button class="px-8 py-3 bg-red-600 text-xl rounded">Get Started</button>
+    </section>
+
+    <!-- Content Rows -->
+    <div class="p-8">
+        <h2 class="text-2xl mb-4">Popular on Netflix</h2>
+        <div class="flex overflow-x-scroll content-scroll space-x-4 pb-4">
+            <!-- Repeat this div for each content item -->
+            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-500 p-8">
+        <div class="max-w-6xl mx-auto">
+            <p class="mb-4">Questions? Call 1-844-505-2993</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="#" class="hover:underline">FAQ</a>
+                <a href="#" class="hover:underline">Help Center</a>
+                <a href="#" class="hover:underline">Terms of Use</a>
+                <a href="#" class="hover:underline">Privacy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
