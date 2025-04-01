@@ -40,15 +40,45 @@
     <!-- Content Rows -->
     <div class="p-8">
         <h2 class="text-2xl mb-4">Popular on Netflix</h2>
-        <div class="flex overflow-x-scroll content-scroll space-x-4 pb-4">
-            <!-- Repeat this div for each content item -->
-            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
-            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
-            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
-            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
-            <div class="flex-none w-64 h-36 bg-gray-800 rounded transform transition duration-300 hover:scale-105 hover:z-10"></div>
+        <div id="movies-container" class="flex overflow-x-scroll content-scroll space-x-4 pb-4">
+            <!-- Movie cards will be inserted here by JavaScript -->
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/movies');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const movies = await response.json();
+                const container = document.getElementById('movies-container');
+                
+                movies.forEach(movie => {
+                    const card = document.createElement('div');
+                    card.className = 'flex-none w-64 h-36 rounded transform transition duration-300 hover:scale-105 hover:z-10 relative group';
+                    card.innerHTML = `
+                        <img src="${movie.poster_url}" alt="${movie.title}" 
+                             class="w-full h-full object-cover rounded" loading="lazy">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition duration-300 flex items-center justify-center">
+                            <button class="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition duration-300 bg-red-600 px-4 py-2 rounded-full">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <div class="absolute bottom-2 left-2 bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
+                            ${movie.rating}/10
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading movies:', error);
+                document.getElementById('movies-container').innerHTML = `
+                    <div class="text-red-500">Error loading movies. Please try again later.</div>
+                `;
+            }
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="bg-black text-gray-500 p-8">
