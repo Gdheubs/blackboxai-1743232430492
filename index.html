@@ -3,12 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Clone</title>
+    <title>Watcher</title>
     <!-- Production-ready Tailwind CSS -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
     <style>
+        /* Modal styles */
+        #movie-modal {
+            transition: opacity 0.3s ease;
+        }
+        #movie-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Scrollbar styling */
+        #search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+        #search-results::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        #search-results::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 3px;
+        }
+
+        /* Search results styling */
+        #search-results {
+            z-index: 100;
+        }
+
         .hero-bg {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba') no-repeat center center/cover;
@@ -24,7 +50,7 @@
 <body class="bg-black text-white">
     <!-- Navigation -->
     <nav class="flex justify-between items-center p-4 z-10 relative">
-        <div class="text-red-600 font-bold text-4xl">NETFLIX</div>
+        <div class="text-red-600 font-bold text-4xl">WATCHER</div>
         <div class="flex space-x-4">
             <button class="px-4 py-1 bg-red-600 rounded">Sign In</button>
         </div>
@@ -39,13 +65,56 @@
 
     <!-- Content Rows -->
     <div class="p-8">
-        <h2 class="text-2xl mb-4">Popular on Netflix</h2>
+        <h2 class="text-2xl mb-4">Popular on Watcher</h2>
         <div id="movies-container" class="flex overflow-x-scroll content-scroll space-x-4 pb-4">
             <!-- Movie cards will be inserted here by JavaScript -->
         </div>
     </div>
 
     <script>
+        // Show movie details modal
+        const showMovieDetails = async (movieId) => {
+            const modal = document.getElementById('movie-modal');
+            try {
+                const response = await fetch(`/api/movies/${movieId}`);
+                const movie = await response.json();
+                
+                document.getElementById('modal-backdrop').src = movie.backdrop_url;
+                document.getElementById('modal-title').innerHTML = 
+                    `${movie.title} <span class="text-gray-400">(${movie.release_year})</span>`;
+                
+                const meta = document.getElementById('modal-meta');
+                meta.innerHTML = `
+                    <span class="bg-red-600 text-white px-2 py-1 rounded text-sm mr-2">${movie.rating}/10</span>
+                    <span class="text-gray-400">${movie.duration}</span>
+                    ${movie.genres?.length ? `<span class="text-gray-400 ml-2">${movie.genres.join(', ')}</span>` : ''}
+                `;
+                
+                document.getElementById('modal-description').textContent = movie.description;
+                
+                if (movie.cast?.length) {
+                    document.getElementById('cast-list').textContent = movie.cast.join(', ');
+                    document.getElementById('modal-cast').classList.remove('hidden');
+                }
+                
+                if (movie.trailer) {
+                    const trailerBtn = document.getElementById('modal-trailer').querySelector('button');
+                    trailerBtn.onclick = () => window.open(`https://www.youtube.com/watch?v=${movie.trailer}`, '_blank');
+                    document.getElementById('modal-trailer').classList.remove('hidden');
+                }
+                
+                modal.classList.remove('hidden');
+            } catch (err) {
+                console.error('Failed to load movie details:', err);
+                alert('Failed to load movie details');
+            }
+        };
+
+        // Close modal handler
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('movie-modal').classList.add('hidden');
+        });
+
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch('http://localhost:3000/api/movies');
@@ -92,5 +161,31 @@
             </div>
         </div>
     </footer>
+
+    <!-- Movie Details Modal -->
+    <div id="movie-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="relative">
+                <img id="modal-backdrop" src="" alt="" class="w-full h-64 object-cover rounded-t-lg">
+                <button class="absolute top-4 right-4 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center text-white close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <h2 id="modal-title" class="text-3xl font-bold mb-2"></h2>
+                <div id="modal-meta" class="flex items-center mb-4"></div>
+                <p id="modal-description" class="mb-4"></p>
+                <div id="modal-cast" class="mb-4 hidden">
+                    <h3 class="text-xl font-semibold mb-2">Cast</h3>
+                    <p id="cast-list"></p>
+                </div>
+                <div id="modal-trailer" class="mt-6 hidden">
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded flex items-center">
+                        <i class="fas fa-play mr-2"></i> Watch Trailer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
