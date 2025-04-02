@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: watcher-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: https://your-vercel-app-url.vercel.app
+    healthCheckPath: /api/health
+</Now that the vercel.json file has been updated for frontend-only deployment, let's proceed with creating the Render configuration file:
+
+<create_file>
+<path>render.yaml</path>
+<content>
+services:
+  - type: web
+    name: watcher-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: https://your-vercel-app-url.vercel.app
+    healthCheckPath: /api/health
